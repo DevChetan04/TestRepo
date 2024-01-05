@@ -1,0 +1,54 @@
+Install Docker compose
+$ sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+Next, set the correct permissions so that the docker-compose command is executable:
+sudo chmod +x /usr/local/bin/docker-compose
+
+To verify that the installation was successful, you can run:
+docker-compose --version
+
+Now we will create some dockerfile, lets make it in a specific directory
+$ mkdir mydirectory
+$ cd mydirectory
+$ nano dockerfile
+
+inside this dockerfile, write this command, save & exit
+FROM ubuntu
+
+Then we will build the image
+$ sudo docker build -t ubuntu .
+
+Now we will create a YAML file
+$ nano docker-compose.yml
+
+inside this yaml file,
+
+version: '3'
+networks:
+  myntwk:
+    driver: bridge
+
+services:
+  web:
+    image: "nginx:latest"
+    ports:
+      - "5000:5000"
+    networks:
+      - myntwk
+  database:
+    image: "mysql"
+    networks:
+      - myntwk
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABSE=myDB
+ 
+Lastly, we will execute the docker compose
+$ sudo docker-compose up
+
+
+To shut down the docker compose,
+$ sudo docker-compose down
+
